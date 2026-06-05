@@ -4,8 +4,6 @@ import mongoose from "mongoose";
 
 
 const BizSphereDB = async () => {
-
-    console.log(`${MONGO_URL}/${DB_Name}`);
     try {
       await mongoose.connect(`${MONGO_URL}/${DB_Name}`);
 
