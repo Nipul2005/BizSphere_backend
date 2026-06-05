@@ -4,7 +4,6 @@ import ApiResponse from "../utils/ApiResponse.utils.js";
 import ApiError from "../utils/ApiError.utils.js";
 
 const SignUp = asynchandler(async (req, res) => {
-  console.log(req.body);
   res.send(new ApiResponse(200, "success", req.body));
 });
 

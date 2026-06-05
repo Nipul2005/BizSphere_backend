@@ -2,7 +2,6 @@ import { allowedOrigins } from "../constants.js";
 
 const corsOptions = {
   origin: (origin, callback) => {
-    console.log(origin, "from backend", allowedOrigins.includes(origin));
     if (!origin) return callback(null, true); // Allow requests with no origin
     if (allowedOrigins.includes(origin)) {
       callback(null, true); // Origin allowed
