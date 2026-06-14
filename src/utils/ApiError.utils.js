@@ -1,16 +1,17 @@
 class ApiError extends Error {
   constructor(
-    message = "something went wrong",
-    statusCode,
+    message = "Something went wrong",
+    statusCode = 500,
     errors = [],
     stack = "",
   ) {
     super(message);
+
     this.statusCode = statusCode;
     this.data = null;
-    this.message = message;
     this.success = false;
     this.errors = errors;
+
     if (stack) {
       this.stack = stack;
     } else {
@@ -18,13 +19,11 @@ class ApiError extends Error {
     }
   }
 
-  // Customize JSON serialization
   toJSON() {
     return {
       statusCode: this.statusCode,
-      data: this.data,
       success: this.success,
-      message: this.message, // Include the message
+      message: this.message,
       errors: this.errors,
     };
   }

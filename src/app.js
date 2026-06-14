@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import corsOptions from "./utils/corsOptions.js";
 import path from "path";
+import globalErrors from "./middlewares/globalError.midleware.js";
 
 export const app = express();
 app.use(cors(corsOptions));
@@ -18,3 +19,4 @@ import userRouter from "./routes/user.routes.js";
 
 app.use("/", healthCheckRouter);
 app.use("/", userRouter);
+app.use(globalErrors);
