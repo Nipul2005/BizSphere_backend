@@ -3,8 +3,10 @@ import asynchandler from "../utils/AsyncHandler.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import ApiError from "../utils/ApiError.utils.js";
 import { accessTokenOption, refreshTokenOption } from "../constants.js";
+import { expireToken } from "../constants.js";
 
-const SignUp = asynchandler(async (req, res) => {
+//signyp
+export const signUp = asynchandler(async (req, res) => {
   const { name, email, password, type } = req.body;
 
   const isExist = await User.findOne({ email });
@@ -36,4 +38,25 @@ const SignUp = asynchandler(async (req, res) => {
     .json(new ApiResponse(201, createdUser, "User registered successfully"));
 });
 
-export { SignUp };
+// login
+export const login = asynchandler(async (req, res) => {});
+
+//logout
+export const logout = asynchandler(async (req, res) => {
+  console.log("getting request from logout");
+  return res
+    .status(200)
+    .clearCookie("accessToken", expireToken)
+    .clearCookie("refreshToken", expireToken)
+    .json(new ApiResponse(200, "User logged out successfully"));
+});
+
+//guess current user
+export const getCurrentUser = asynchandler(async (req, res) => {
+  const cookie = req.cookies;
+
+  console.log(cookie, "from user");
+
+  return res.json(new ApiResponse(200, "success"));
+});
+
