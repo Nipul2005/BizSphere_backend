@@ -39,7 +39,29 @@ export const signUp = asynchandler(async (req, res) => {
 });
 
 // login
-export const login = asynchandler(async (req, res) => {});
+export const login = asynchandler(async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user) {
+    throw new ApiError("Email or password is incorrect", 400);
+  }
+
+  const isMatch = await user.comparePassword(password);
+
+  if(!isMatch) {
+    throw new ApiError("Email or password is incorrect", 400);
+  }
+
+  const accessToken = await user.generateAccessToken();
+  const refreshToken = await user.generateRefreshToken();
+
+  return res
+  .status(200)
+  .cookie("accessToken", accessToken, accessTokenOption)
+  .cookie("refreshToken", refreshToken, refreshTokenOption)
+  .json(new ApiResponse(200, "success", user));
+});
 
 //logout
 export const logout = asynchandler(async (req, res) => {
@@ -59,4 +81,3 @@ export const getCurrentUser = asynchandler(async (req, res) => {
 
   return res.json(new ApiResponse(200, "success"));
 });
-
