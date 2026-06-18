@@ -1,12 +1,12 @@
 import User from "../models/user.model.js";
-import asynchandler from "../utils/AsyncHandler.utils.js";
+import asyncHandler from "../utils/asyncHandler.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import ApiError from "../utils/ApiError.utils.js";
 import { accessTokenOption, refreshTokenOption } from "../constants.js";
 import { expireToken } from "../constants.js";
 
 //signyp
-export const signUp = asynchandler(async (req, res) => {
+export const signUp = asyncHandler(async (req, res) => {
   const { name, email, password, type } = req.body;
 
   const isExist = await User.findOne({ email });
@@ -39,7 +39,7 @@ export const signUp = asynchandler(async (req, res) => {
 });
 
 // login
-export const login = asynchandler(async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email }).select("+password");
 
@@ -64,7 +64,7 @@ export const login = asynchandler(async (req, res) => {
 });
 
 //logout
-export const logout = asynchandler(async (req, res) => {
+export const logout = asyncHandler(async (req, res) => {
   console.log("getting request from logout");
   return res
     .status(200)
@@ -74,10 +74,4 @@ export const logout = asynchandler(async (req, res) => {
 });
 
 //guess current user
-export const getCurrentUser = asynchandler(async (req, res) => {
-  const cookie = req.cookies;
 
-  console.log(cookie, "from user");
-
-  return res.json(new ApiResponse(200, "success"));
-});
