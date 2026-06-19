@@ -8,6 +8,7 @@ const globalErrors = (err, req, res, next) => {
   res.status(err.statusCode || 500).json({
     statusCode: err.statusCode || 500,
     success: false,
+    code: err.code,
     message: err.message || "Internal Server Error",
     errors,
     ...(NODE_ENV === "development" ? { stack: err.stack } : {}),

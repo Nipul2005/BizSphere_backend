@@ -4,7 +4,7 @@ export const accessTokenOption = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "prod",
   sameSite: "None",
-  maxAge: 1000 * 60 * 15, // 15 minutes
+  maxAge: 1000 * 60 * 20, // 20 minutes
 };
 
 export const refreshTokenOption = {

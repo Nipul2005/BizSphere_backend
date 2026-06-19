@@ -4,11 +4,12 @@ class ApiError extends Error {
     statusCode = 500,
     code = "",
     errors = [],
-    stack = "",
+    stack = ""
   ) {
     super(message);
 
     this.statusCode = statusCode;
+    this.code = code; // <- store code
     this.data = null;
     this.success = false;
     this.errors = errors;
@@ -24,6 +25,7 @@ class ApiError extends Error {
     return {
       statusCode: this.statusCode,
       success: this.success,
+      code: this.code, // <- return code
       message: this.message,
       errors: this.errors,
     };
