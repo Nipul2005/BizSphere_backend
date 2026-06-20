@@ -91,14 +91,20 @@ export const login = asyncHandler(async (req, res) => {
 
 //logout
 export const logout = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(req.user._id, {
+    refreshToken: null,
+  });
+
+
   return res
     .status(200)
     .clearCookie("accessToken", expireToken)
     .clearCookie("refreshToken", expireToken)
-    .json(new ApiResponse(200, "User logged out successfully"));
+    .json(new ApiResponse(200, null, "User logged out successfully"));
 });
 
 //guess current user
 export const getCurrentUser = asyncHandler(async (req, res) => {
+  console.log("im here")
   return res.status(200).json(new ApiResponse(200, "loggedIn", req.user));
 });

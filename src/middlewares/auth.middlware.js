@@ -6,7 +6,6 @@ import { JWT_ACCESS_SECRET } from "../utils/Env.js";
 
 export const authMiddleware = asyncHandler(async (req, res, next) => {
   const token = req.cookies?.accessToken;
-
   // No token provided
   if (!token) {
     throw new ApiError("Credential not found", 401, "TOKEN_MISSING");

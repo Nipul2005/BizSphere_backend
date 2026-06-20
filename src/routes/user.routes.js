@@ -5,14 +5,14 @@ import {
   signUp,
   logout,
   login,
-  getCurrentUser
+  getCurrentUser,
 } from "../controllers/user.controller.js";
 
 const userRouter = Router();
 
 userRouter.route("/signup").post(signUp);
 userRouter.route("/login").post(login);
-userRouter.route("/logout").post(logout);
-userRouter.route("/guess").post(authMiddleware,getCurrentUser);
+userRouter.route("/logout").post(authMiddleware, logout);
+userRouter.route("/guess").post(authMiddleware, getCurrentUser);
 
 export default userRouter;

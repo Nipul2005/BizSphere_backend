@@ -19,7 +19,7 @@ export const refreshTokenOption = {
 export const expireToken = {
   httpOnly: true,
   secure: isProd,
-  sameSite: "None",
+  sameSite: isProd ? "none" : "lax",
 };
 
 export const DB_Name = "BizSphere";
