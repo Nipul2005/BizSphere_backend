@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import asyncHandler from "../utils/AsyncHandler.utils.js"
+import asyncHandler from "../utils/AsyncHandler.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import ApiError from "../utils/ApiError.utils.js";
 import { accessTokenOption, refreshTokenOption } from "../constants.js";
@@ -22,14 +22,14 @@ export const signUp = asyncHandler(async (req, res) => {
     type,
   });
 
-  const createdUser = await User.findById(user._id).select("-password");
+  const accesstoken = await user.generateAccessToken();
+  const refreshToken = await user.generateRefreshToken();
 
-  if (!createdUser) {
-    throw new ApiError("Failed to create your account", 204, "NO_CONTENT");
-  }
+  user.refreshToken = refreshToken;
+  await user.save({ validateBeforeSave: false });
 
-  const accesstoken = await createdUser.generateAccessToken();
-  const refreshtoken = await createdUser.generateRefreshToken();
+  const createdUser = await User.findById(user._id).select("-password -refreshToken");
+
 
   return res
     .status(201)
@@ -44,23 +44,34 @@ export const login = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    throw new ApiError("Email or password is incorrect", 404, "INVALID_CREDENTIAL");
+    throw new ApiError(
+      "Email or password is incorrect",
+      404,
+      "INVALID_CREDENTIAL",
+    );
   }
 
   const isMatch = await user.comparePassword(password);
 
-  if(!isMatch) {
-    throw new ApiError("Email or password is incorrect", 404, "INVALID_CREDENTIAL");
+  if (!isMatch) {
+    throw new ApiError(
+      "Email or password is incorrect",
+      404,
+      "INVALID_CREDENTIAL",
+    );
   }
 
   const accessToken = await user.generateAccessToken();
   const refreshToken = await user.generateRefreshToken();
 
+  user.refreshToken = refreshToken;
+  await user.save({ validateBeforeSave: false });
+
   return res
-  .status(200)
-  .cookie("accessToken", accessToken, accessTokenOption)
-  .cookie("refreshToken", refreshToken, refreshTokenOption)
-  .json(new ApiResponse(200, "success", user));
+    .status(200)
+    .cookie("accessToken", accessToken, accessTokenOption)
+    .cookie("refreshToken", refreshToken, refreshTokenOption)
+    .json(new ApiResponse(200, "success", user));
 });
 
 //logout
@@ -74,6 +85,5 @@ export const logout = asyncHandler(async (req, res) => {
 
 //guess current user
 export const getCurrentUser = asyncHandler(async (req, res) => {
-  return res.status(200).json(new ApiResponse("Welcome Back", req.user))
-})
-
+  return res.status(200).json(new ApiResponse(200, "loggedIn", req.user));
+});

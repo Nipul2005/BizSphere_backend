@@ -16,7 +16,9 @@ app.use(express.static(path.join("public")));
 // routes declaration
 import healthCheckRouter from "./routes/healthCheck.routes.js";
 import userRouter from "./routes/user.routes.js";
+import refreshTokenRoute from "./routes/refreshToken.routes.js";
 
 app.use("/", healthCheckRouter);
 app.use("/", userRouter);
+app.use('/', refreshTokenRoute)
 app.use(globalErrors);
