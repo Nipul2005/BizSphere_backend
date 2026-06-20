@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import asyncHandler from "../utils/asyncHandler.utils.js";
+import asyncHandler from "../utils/AsyncHandler.utils.js"
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import ApiError from "../utils/ApiError.utils.js";
 import { accessTokenOption, refreshTokenOption } from "../constants.js";
