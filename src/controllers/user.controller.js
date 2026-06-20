@@ -5,7 +5,7 @@ import ApiError from "../utils/ApiError.utils.js";
 import { accessTokenOption, refreshTokenOption } from "../constants.js";
 import { expireToken } from "../constants.js";
 
-//signyp
+//signup
 export const signUp = asyncHandler(async (req, res) => {
   const { name, email, password, type, userName } = req.body;
 
