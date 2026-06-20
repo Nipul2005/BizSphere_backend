@@ -20,8 +20,6 @@ async function runServer() {
 
     await BizSphereDB();
 
-    // console.log("Database connected successfully");
-
     app.listen(PORT, () => {
       console.log("Server started successfuly at http://localhost:5000")
     });

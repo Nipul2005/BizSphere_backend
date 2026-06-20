@@ -105,6 +105,5 @@ export const logout = asyncHandler(async (req, res) => {
 
 //guess current user
 export const getCurrentUser = asyncHandler(async (req, res) => {
-  console.log("im here")
   return res.status(200).json(new ApiResponse(200, "loggedIn", req.user));
 });
