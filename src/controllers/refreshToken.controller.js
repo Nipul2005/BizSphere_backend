@@ -29,7 +29,7 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
 
   // Prevent use of old/stolen refresh tokens
   if (user.refreshToken !== refreshToken) {
-    throw new ApiError("Invalid refresh token", 401, "INVALID_REFRESH_TOKEN");
+    throw new ApiError("refresh token not matched", 401, "INVALID_REFRESH_TOKEN");
   }
 
   const newAccessToken = await user.generateAccessToken();
