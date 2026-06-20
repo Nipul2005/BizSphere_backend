@@ -18,6 +18,15 @@ const userSchema = new mongoose.Schema(
       maxlength: 50,
     },
 
+    userName: {
+      type: String,
+      trim: true,
+      unique: true,
+      minlength: 3,
+      maxlength: 20,
+      lowercase: true,
+    },
+
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -82,8 +91,7 @@ userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
-      name: this.name,
-      email: this.email,
+      username: this.userName,
       type: this.type,
     },
     JWT_ACCESS_SECRET,
@@ -99,6 +107,15 @@ userSchema.methods.generateRefreshToken = function () {
     JWT_REFRESH_SECRET,
     { expiresIn: jwtRefreshTokenExpiry },
   );
+};
+
+userSchema.statics.findByUserNameOrEmail = function (identifier) {
+  return this.findOne({
+    $or: [
+      { email: identifier.toLowerCase() },
+      { userName: identifier.toLowerCase() },
+    ],
+  });
 };
 
 const User = mongoose.model("User", userSchema);

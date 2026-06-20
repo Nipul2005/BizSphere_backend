@@ -7,12 +7,22 @@ import { expireToken } from "../constants.js";
 
 //signyp
 export const signUp = asyncHandler(async (req, res) => {
-  const { name, email, password, type } = req.body;
+  const { name, email, password, type, userName } = req.body;
 
-  const isExist = await User.findOne({ email });
+  const isUserNameExist = await User.findByUserNameOrEmail(userName);
+
+  if (isUserNameExist) {
+    throw new ApiError(
+      "Username already taken",
+      409,
+      "USERNAME_ALREADY_EXISTS",
+    );
+  }
+
+  const isExist = await User.findByUserNameOrEmail(email);
 
   if (isExist) {
-    throw new ApiError("User already exists, Please login", 409, "CONFLICT");
+    throw new ApiError("Email already exist", 409, "CONFLICT");
   }
 
   const user = await User.create({
@@ -20,6 +30,7 @@ export const signUp = asyncHandler(async (req, res) => {
     email,
     password,
     type,
+    userName,
   });
 
   const accesstoken = await user.generateAccessToken();
@@ -28,20 +39,21 @@ export const signUp = asyncHandler(async (req, res) => {
   user.refreshToken = refreshToken;
   await user.save({ validateBeforeSave: false });
 
-  const createdUser = await User.findById(user._id).select("-password -refreshToken");
-
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken",
+  );
 
   return res
     .status(201)
     .cookie("accessToken", accesstoken, accessTokenOption)
-    .cookie("refreshToken", refreshtoken, refreshTokenOption)
+    .cookie("refreshToken", refreshToken, refreshTokenOption)
     .json(new ApiResponse(201, createdUser, "User registered successfully"));
 });
 
 // login
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findByUserNameOrEmail(email).select("+password");
 
   if (!user) {
     throw new ApiError(
@@ -66,12 +78,15 @@ export const login = asyncHandler(async (req, res) => {
 
   user.refreshToken = refreshToken;
   await user.save({ validateBeforeSave: false });
+  const userObject = user.toObject();
 
+  delete userObject.password;
+  delete userObject.refreshToken;
   return res
     .status(200)
     .cookie("accessToken", accessToken, accessTokenOption)
     .cookie("refreshToken", refreshToken, refreshTokenOption)
-    .json(new ApiResponse(200, "success", user));
+    .json(new ApiResponse(200, "success", userObject));
 });
 
 //logout
