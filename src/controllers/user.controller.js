@@ -40,14 +40,14 @@ export const signUp = asyncHandler(async (req, res) => {
   await user.save({ validateBeforeSave: false });
 
   const createdUser = await User.findById(user._id).select(
-    "-password -refreshToken",
+    "-password -refreshToken -__v -createdAt -updatedAt",
   );
 
   return res
     .status(201)
     .cookie("accessToken", accesstoken, accessTokenOption)
     .cookie("refreshToken", refreshToken, refreshTokenOption)
-    .json(new ApiResponse(201, createdUser, "User registered successfully"));
+    .json(new ApiResponse(201, "User registered successfully", createdUser));
 });
 
 // login
@@ -94,7 +94,6 @@ export const logout = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, {
     refreshToken: null,
   });
-
 
   return res
     .status(200)
