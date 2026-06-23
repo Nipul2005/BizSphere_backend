@@ -106,3 +106,11 @@ export const logout = asyncHandler(async (req, res) => {
 export const getCurrentUser = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, "loggedIn", req.user));
 });
+
+export const createService = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  const serviceImages = req.files;
+  console.log(serviceImages)
+
+  return res.status(200).json(new ApiResponse(200, null, "success"));
+});
