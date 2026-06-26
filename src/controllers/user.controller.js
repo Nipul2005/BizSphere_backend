@@ -4,6 +4,9 @@ import ApiResponse from "../utils/ApiResponse.utils.js";
 import ApiError from "../utils/ApiError.utils.js";
 import { accessTokenOption, refreshTokenOption } from "../constants.js";
 import { expireToken } from "../constants.js";
+import { imageShaper } from "../utils/imageShaper.utils.js";
+import { bizSphereFileUploader } from "../utils/cloudinary.utils.js";
+import Service from "../models/services.model.js";
 
 //signup
 export const signUp = asyncHandler(async (req, res) => {
@@ -108,9 +111,48 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 export const createService = asyncHandler(async (req, res) => {
-  console.log(req.body);
+  const { serviceName, serviceCategory, sortDescription, description, price } =
+    req.body;
   const serviceImages = req.files;
-  console.log(serviceImages)
 
-  return res.status(200).json(new ApiResponse(200, null, "success"));
+  // Validate required fields
+  if (
+    !serviceName?.trim() ||
+    !serviceCategory?.trim() ||
+    !sortDescription?.trim() ||
+    !description?.trim() ||
+    !price
+  ) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  // Validate images
+  if (!serviceImages || serviceImages.length === 0) {
+    throw new ApiError(400, "Add at least one image of your service");
+  }
+
+  // Process images
+  const shapedImages = await Promise.all(
+    serviceImages.map((file) => imageShaper(file)),
+  );
+
+  // Upload to Cloudinary
+  const uploads = await bizSphereFileUploader(shapedImages, req.user._id);
+
+  const service = await Service.create({
+    provider: req.user._id,
+    serviceName: serviceName,
+    serviceCategory,
+    sortDescription,
+    description,
+    price,
+    media: uploads.map(({ public_id, secure_url }) => ({
+      public_id,
+      secure_url,
+    })),
+  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, "Service created successfully"));
 });

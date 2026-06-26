@@ -3,7 +3,7 @@ const bizSphereStorage = multer.memoryStorage({});
 const bizShpereImagesHandler = multer({
   storage: bizSphereStorage,
   limits: {
-    fileSize: 10 * 1024 * 1024, //5Mb
+    fileSize: 100 * 1024 * 1024, //100Mb
   },
 });
 

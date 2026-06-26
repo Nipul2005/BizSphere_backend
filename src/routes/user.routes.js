@@ -18,6 +18,6 @@ userRouter.route("/logout").post(authMiddleware, logout);
 userRouter.route("/guess").post(authMiddleware, getCurrentUser);
 userRouter
   .route("/createService")
-  .post(authMiddleware, bizShpereImagesHandler.array("files"), createService);
+  .post(authMiddleware, bizShpereImagesHandler.array("files", 5), createService);
 
 export default userRouter;

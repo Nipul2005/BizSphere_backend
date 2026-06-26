@@ -20,7 +20,7 @@ const serviceSchema = new mongoose.Schema(
       trim: true,
     },
 
-    shortDescription: {
+    sortDescription: {
       type: String,
       required: true,
       maxlength: 200,
@@ -39,7 +39,7 @@ const serviceSchema = new mongoose.Schema(
 
     media: [
       {
-        type: String,
+        type: Object,
       },
     ],
 
