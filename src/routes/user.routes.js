@@ -7,6 +7,7 @@ import {
   login,
   getCurrentUser,
   createService,
+  myServices,
 } from "../controllers/user.controller.js";
 import bizShpereImagesHandler from "../multer/upload.multer.js";
 
@@ -18,6 +19,12 @@ userRouter.route("/logout").post(authMiddleware, logout);
 userRouter.route("/guess").post(authMiddleware, getCurrentUser);
 userRouter
   .route("/createService")
-  .post(authMiddleware, bizShpereImagesHandler.array("files", 5), createService);
+  .post(
+    authMiddleware,
+    bizShpereImagesHandler.array("files", 5),
+    createService,
+  );
+
+userRouter.route("/myServices").post(authMiddleware, myServices);
 
 export default userRouter;

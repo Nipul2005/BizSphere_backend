@@ -156,3 +156,20 @@ export const createService = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(201, "Service created successfully"));
 });
+
+export const myServices = asyncHandler(async (req, res) => {
+  const services = await Service.aggregate([
+    {
+      $match: {
+        provider: req.user._id,
+      },
+    },
+    {
+      $project: {
+        __v: 0,
+      },
+    },
+  ]);
+
+  return res.status(200).json(new ApiResponse(201, "success", services));
+});
