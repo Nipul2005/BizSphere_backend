@@ -169,6 +169,11 @@ export const myServices = asyncHandler(async (req, res) => {
         __v: 0,
       },
     },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
   ]);
 
   return res.status(200).json(new ApiResponse(201, "success", services));
