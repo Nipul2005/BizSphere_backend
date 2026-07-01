@@ -111,8 +111,14 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 export const createService = asyncHandler(async (req, res) => {
-  const { serviceName, serviceCategory, sortDescription, description, price } =
-    req.body;
+  const {
+    serviceName,
+    serviceCategory,
+    sortDescription,
+    description,
+    price,
+    features,
+  } = req.body;
   const serviceImages = req.files;
 
   // Validate required fields
@@ -121,36 +127,37 @@ export const createService = asyncHandler(async (req, res) => {
     !serviceCategory?.trim() ||
     !sortDescription?.trim() ||
     !description?.trim() ||
-    !price
+    !price ||
+    !features.length === 0
   ) {
-    throw new ApiError(400, "All fields are required");
+    throw new ApiError("All fields are required", 400);
   }
 
   // Validate images
-  if (!serviceImages || serviceImages.length === 0) {
-    throw new ApiError(400, "Add at least one image of your service");
-  }
+  // if (!serviceImages || serviceImages.length === 0) {
+  //   throw new ApiError(400, "Add at least one image of your service");
+  // }
 
-  // Process images
-  const shapedImages = await Promise.all(
-    serviceImages.map((file) => imageShaper(file)),
-  );
+  // // Process images
+  // const shapedImages = await Promise.all(
+  //   serviceImages.map((file) => imageShaper(file)),
+  // );
 
-  // Upload to Cloudinary
-  const uploads = await bizSphereFileUploader(shapedImages, req.user._id);
+  // // Upload to Cloudinary
+  // const uploads = await bizSphereFileUploader(shapedImages, req.user._id);
 
-  const service = await Service.create({
-    provider: req.user._id,
-    serviceName: serviceName,
-    serviceCategory,
-    sortDescription,
-    description,
-    price,
-    media: uploads.map(({ public_id, secure_url }) => ({
-      public_id,
-      secure_url,
-    })),
-  });
+  // const service = await Service.create({
+  //   provider: req.user._id,
+  //   serviceName: serviceName,
+  //   serviceCategory,
+  //   sortDescription,
+  //   description,
+  //   price,
+  //   media: uploads.map(({ public_id, secure_url }) => ({
+  //     public_id,
+  //     secure_url,
+  //   })),
+  // });
 
   return res
     .status(201)
